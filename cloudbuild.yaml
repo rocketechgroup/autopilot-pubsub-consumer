@@ -1,0 +1,10 @@
+steps:
+  - name: 'gcr.io/cloud-builders/docker'
+    args:
+      - 'build'
+      - '-t'
+      - 'europe-west2-docker.pkg.dev/rocketech-de-pgcp-sandbox/demo/autopilot-pubsub-consumer:v1.0.0'
+      - '.'
+
+images:
+  - 'europe-west2-docker.pkg.dev/rocketech-de-pgcp-sandbox/demo/autopilot-pubsub-consumer:v1.0.0'

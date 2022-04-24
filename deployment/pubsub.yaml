@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: autopilot-pubsub-consumer
+spec:
+  selector:
+    matchLabels:
+      app: autopilot-pubsub-consumer
+  template:
+    metadata:
+      labels:
+        app: autopilot-pubsub-consumer
+    spec:
+      serviceAccountName: pubsub-consumer-demo-sa # this is to tell which KSA to use for this service
+      containers:
+        - name: subscriber
+          image: europe-west2-docker.pkg.dev/rocketech-de-pgcp-sandbox/demo/autopilot-pubsub-consumer:v1.0.0
+          env:
+            - name: PROJECT_ID
+              value: "rocketech-de-pgcp-sandbox"
+            - name: SUBSCRIPTION_ID
+              value: "autopilot-test-sub"

@@ -28,7 +28,7 @@ topic_name = 'projects/{project_id}/topics/{topic}'.format(
     project_id=PROJECT_ID,
     topic=TOPIC_ID,
 )
-for i in range(1, 100000):
+for i in range(1, 10000):
     msg = json.dumps({'name': f'Message count: {i}'}).encode('utf-8')
     publish_future = publisher.publish(topic_name, msg)
 
