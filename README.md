@@ -9,6 +9,12 @@ To build the Docker Image for the Pub/Sub Consumer Services, run
 gcloud builds submit
 ``` 
 
+## Create Topic & Subscription
+```
+gcloud pubsub topics create autopilot-test-topic
+gcloud pubsub subscriptions create autopilot-test-sub --topic autopilot-test-topic
+```
+
 ## Setup Workload Identity
 ### For the consumer
 - GSA name is: `pubsub-consumer-demo-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com` - requires the Pub/Sub Subscriber Role
@@ -16,17 +22,10 @@ gcloud builds submit
 - Namespace is `pubsub-consumer-demo`
 
 ```
-kubectl create namespace pubsub-consumer-demo
-
-kubectl create serviceaccount pubsub-consumer-demo-sa --namespace pubsub-consumer-demo
-
 gcloud iam service-accounts add-iam-policy-binding pubsub-consumer-demo-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com \
     --role roles/iam.workloadIdentityUser \
     --member "serviceAccount:rocketech-de-pgcp-sandbox.svc.id.goog[pubsub-consumer-demo/pubsub-consumer-demo-sa]"
 
-kubectl annotate serviceaccount pubsub-consumer-demo-sa \
-    --namespace pubsub-consumer-demo \
-    iam.gke.io/gcp-service-account=pubsub-consumer-demo-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com
 ```
 
 ### For the metric adapter service
@@ -43,7 +42,30 @@ gcloud iam service-accounts add-iam-policy-binding custom-metrics-sa@rocketech-d
     --role roles/iam.workloadIdentityUser \
     --member "serviceAccount:rocketech-de-pgcp-sandbox.svc.id.goog[custom-metrics/custom-metrics-stackdriver-adapter]"
 
-kubectl annotate serviceaccount custom-metrics-stackdriver-adapter \
-    --namespace custom-metrics \
-    iam.gke.io/gcp-service-account=custom-metrics-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com
+```
+Now deploy the metric adaptor. Note the service account policy binding above must be done first before deploying the metric adapter service.
+```
+kubectl apply -f deployment/metric-adaptor.yaml
+```
+
+### Deploy consumer
+Deploy Consumer
+```
+kubectl apply -f deployment/pubsub.yaml
+```
+
+Deploy Consumer HPA
+```
+kubectl apply -f deployment/pubsub-hpa.yaml
+```
+
+### Manage Balloon Pods
+Create priority class
+```
+kubectl apply -f deployment/balloon-priority.yaml
+```
+
+Deploy balloon pods
+```
+kubectl apply -f deployment/balloon-deploy.yaml
 ```

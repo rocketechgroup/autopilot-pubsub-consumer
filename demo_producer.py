@@ -20,15 +20,24 @@ def callback(future) -> None:
 
 
 batch_settings = pubsub_v1.types.BatchSettings(
-    max_bytes=2048,  # One kilobyte
-    max_latency=1,  # One second
+    max_bytes=2048000,  # One kilobyte
+    max_latency=5,  # One second
 )
-publisher = pubsub_v1.PublisherClient(batch_settings=batch_settings)
+
+publisher_options = pubsub_v1.types.PublisherOptions(
+    flow_control=pubsub_v1.types.PublishFlowControl(
+        message_limit=500,
+        byte_limit=2 * 1024 * 1024,
+        limit_exceeded_behavior=pubsub_v1.types.LimitExceededBehavior.BLOCK,
+    ),
+)
+
+publisher = pubsub_v1.PublisherClient(batch_settings=batch_settings, publisher_options=publisher_options)
 topic_name = 'projects/{project_id}/topics/{topic}'.format(
     project_id=PROJECT_ID,
     topic=TOPIC_ID,
 )
-for i in range(1, 10000):
+for i in range(1, 100000):
     msg = json.dumps({'name': f'Message count: {i}'}).encode('utf-8')
     publish_future = publisher.publish(topic_name, msg)
 

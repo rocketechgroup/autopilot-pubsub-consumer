@@ -2,6 +2,7 @@ apiVersion: autoscaling/v2beta2
 kind: HorizontalPodAutoscaler
 metadata:
   name: autopilot-pubsub-consumer-hpa
+  namespace: pubsub-consumer-demo
 spec:
   minReplicas: 1
   maxReplicas: 5
