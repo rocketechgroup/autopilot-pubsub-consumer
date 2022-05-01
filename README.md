@@ -60,6 +60,8 @@ kubectl apply -f deployment/pubsub-hpa.yaml
 ```
 
 ### Manage Balloon Pods
+> original code for Balloon pod is from [here](https://github.com/WilliamDenniss/kubernetes-for-developers/tree/master/Chapter06/6.3.2_BalloonPod)
+
 Create priority class
 ```
 kubectl apply -f deployment/balloon-priority.yaml
