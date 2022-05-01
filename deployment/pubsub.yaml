@@ -6,8 +6,14 @@ metadata:
 apiVersion: v1
 kind: ServiceAccount
 metadata:
+  name: pubsub-consumer-demo-sa
+  namespace: pubsub-consumer-demo
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
   annotations:
-    iam.gke.io/gcp-service-account: custom-metrics-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com
+    iam.gke.io/gcp-service-account: pubsub-consumer-demo-sa@rocketech-de-pgcp-sandbox.iam.gserviceaccount.com
   name: pubsub-consumer-demo-sa
   namespace: pubsub-consumer-demo
 ---
